@@ -10,6 +10,63 @@ import java.util.Arrays;
 
 public class FindMeanNumber {
 
+    private static Float FindMidean (Float[] myArray1, Float[] myArray2){
+        /* Only three potential solutions 
+        (a) everyting in array1 is smaller than the first item in array2
+         a[1,2,3] b[4,5,6]
+
+        (b) evertying in Array2 is smaller than the first item in array1
+          a[4,5,6] b[1,2,3]
+
+        (c) there is a mix of size values between the two arrays
+        a[2,5,9] b[3,4,10]
+        */
+
+        int maxMedianElementIndex  = (myArray1.length + myArray2.length)/2;
+        Float myMedian = -1.0F; // initiallize it to my error state
+
+        //if the arrays are not the same size, we could overrun the index, so I'll switch to the cheat
+        //when the arrays are not the same size
+
+        if (myArray1.length != myArray2.length){
+            myMedian = FindMideanCheat(myArray1, myArray2);
+            System.out.println("FYI: I had to cheat beause the arrays were of differnt sizes");
+            return myMedian;
+        }
+
+        // (a) Check if everything in Array1 is larger
+        if (myArray1[myArray1.length-1] > myArray2[0]){
+            myMedian = ((myArray1[myArray1.length-1] + myArray2[0])/2.0F);
+            return myMedian;
+        }
+
+        // (b) Check if everything in Array1 is larger
+        if (myArray2[myArray2.length-1] > myArray1[0]){
+            myMedian = ((myArray2[myArray2.length-1] + myArray1[0])/2.0F);
+            return myMedian;
+        }
+
+        // (c) Need to search for the median
+        int i = 0; //iterator for myArray1
+        int j = 0; //iterator for myArray2
+        int count = 0;//count of items in my search for a median
+        float medianCandidateArray1 = myArray1[0];
+        float medianCandidateArray2 = myArray2[0];
+
+        while (count < maxMedianElementIndex){
+            if (medianCandidateArray1 <= medianCandidateArray2){
+                i++;
+                medianCandidateArray1 = myArray1[i];
+            } else if(medianCandidateArray2 < medianCandidateArray1){ 
+                j++;
+                medianCandidateArray2 = myArray2[j];
+            }
+            count++; //each time we found the smaller number, we increase the count toward the median
+        }
+        myMedian = (medianCandidateArray1 + medianCandidateArray2)/2;
+        return myMedian;
+    }
+
     private static Float[] TurnStringToFloatArray(String myNumString) {
         int i;
         String[] numStringArray = myNumString.split(" ");;
@@ -37,7 +94,7 @@ public class FindMeanNumber {
         return myMean;
     }
 
-    private static Float FindMidean(Float[] firstArray, Float[] secondArray){
+    private static Float FindMideanCheat(Float[] firstArray, Float[] secondArray){
         Float myMedian;
         Float[] joinedArray = new Float[firstArray.length + secondArray.length];
         System.arraycopy(firstArray, 0, joinedArray, 0, firstArray.length);  
@@ -95,6 +152,6 @@ public class FindMeanNumber {
 
         // Checking the median
         Float myMedian = FindMidean(numArray1, numArray2);
-        System.out.println("The Median is: "+ myMedian);
+        System.out.println("The Median the smarter way: "+ myMedian);
     }
 }
